@@ -30,14 +30,14 @@ jobs:
           name: war-file
           path: target/*.war
 
-      - name: Download and Install Apache Tomcat 9 Manually
+      - name: Download Latest Apache Tomcat 9
         run: |
-          TOMCAT_VERSION=9.0.80
-          wget https://downloads.apache.org/tomcat/tomcat-9/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
+          TOMCAT_VERSION=$(curl -s https://downloads.apache.org/tomcat/tomcat-9/ | grep -oP 'v9\.\d+\.\d+' | sort -V | tail -1 | tr -d 'v')
+          wget https://archive.apache.org/dist/tomcat/tomcat-9/v$TOMCAT_VERSION/bin/apache-tomcat-$TOMCAT_VERSION.tar.gz
           tar -xvzf apache-tomcat-$TOMCAT_VERSION.tar.gz
           sudo mv apache-tomcat-$TOMCAT_VERSION /opt/tomcat
           sudo chmod +x /opt/tomcat/bin/*.sh
-          echo "Tomcat installed successfully."
+          echo "Installed Tomcat Version: $TOMCAT_VERSION"
 
       - name: Deploy WAR to Tomcat
         run: |
